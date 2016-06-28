@@ -12,13 +12,25 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+var stubMsg = {results: []};
 
-var resultObj;
 
 var requestHandler = function(request, response) {
-  resultObj = resultObj || {
-    results: []
-  };
+  var method = request.method;
+  var url = request.url;
+  // body = body || [];
+  // var responseBody = {
+  //   headers: headers,
+  //   method: method,
+  //   url: url,
+  //   results: body,
+
+  // };
+  var responseBody;
+
+  // resultObj = resultObj || {
+  //   results: []
+  // };
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -27,7 +39,7 @@ var requestHandler = function(request, response) {
   //
   // Documentation for both request and response can be found in the HTTP section at
   // http://nodejs.org/documentation/api/
-  var statusCode = 200;
+  var statusCode = 404;
   // Do some basic logging.
   var headers = defaultCorsHeaders;
   headers['Content-Type'] = 'application/json';
@@ -35,28 +47,35 @@ var requestHandler = function(request, response) {
   // Adding more logging to your server can be an easy way to get passive
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
-  console.log('Serving request type ' + request.method + ' for url ' + request.url);
+  console.log('Serving request type ' + method + ' for url ' + url);
   
-  if (request.method === 'GET') {
-  // The outgoing status.
-    // GET Requests
+  if (method === 'OPTIONS') {
     statusCode = 200;
-  } else if (request.method === 'POST') {
-    // POST Requests
-    statusCode = 201;
+    response.writeHead(statusCode, headers);
+    response.end();
+    
+ 
+  } else if (method === 'GET') {
+    if (request.url === '/classes/messages/' || request.url === '/classes/messages') {
+      statusCode = 200;
+    }  
+  } else if (method === 'POST') {
+    if (request.url === '/classes/messages/' || request.url === '/classes/messages') {
+      statusCode = 201;
+      request.on('data', function(chunk) {
+        stubMsg.results.push(JSON.parse(chunk.toString()));
+      });
+      request.on('end', function() {
+        response.writeHead(statusCode, headers);
+        response.end();
+      });
+    }
+  } 
     // console.log(request._postData);
     // resultObj.results.push(request._postData);
-    request.on('data', function(chunk) {
-      resultObj.results.push(JSON.parse(chunk.toString()));
-    });
-    request.on('end', function() {
-      response.writeHead(statusCode, headers);
-      response.end();
-    });
-  } 
-  if (request.url !== '/classes/messages') {
-    statusCode = 404;
-  }
+  // if (request.url !== '/classes/messages') {
+  //   statusCode = 404;
+  // }
   // See the note below about CORS headers.
   
 
@@ -80,7 +99,7 @@ var requestHandler = function(request, response) {
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
   // console.log(resultObj);
-  response.end(JSON.stringify(resultObj));
+  response.end(JSON.stringify(stubMsg));
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
