@@ -19,7 +19,11 @@ var defaultCorsHeaders = {
   'access-control-allow-headers': 'content-type, accept',
   'access-control-max-age': 10 // Seconds.
 };
-var stubMsg = {results: []};
+var stubMsg = {results: [
+    {username: 'Anonymous',
+    text: 'hello',
+    roomname: 'Lobby'}
+  ]};
 
 
 var requestHandler = function(request, response) {
