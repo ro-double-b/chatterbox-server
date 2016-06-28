@@ -25,7 +25,7 @@ var requestHandler = function(request, response) {
   //
   // Documentation for both request and response can be found in the HTTP section at
   // http://nodejs.org/documentation/api/
-
+  var statusCode;
   // Do some basic logging.
   //
   // Adding more logging to your server can be an easy way to get passive
@@ -33,18 +33,18 @@ var requestHandler = function(request, response) {
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
-
-  if (request.method === 'GET') {
-
+  if (request.method === 'GET' && request.url) {
   // The outgoing status.
-    var statusCode = 200;
-  } else {
-    // Posting data
-    var statusCode = 201;
-
+    // GET Requests
+    statusCode = 200;
+  } else if (request.method === 'POST') {
+    // POST Requests
+    statusCode = 201;
     resultObj.results.push(request._postData);
+  } 
+  if (request.url !== '/classes/messages') {
+    statusCode = 404;
   }
-
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
 
@@ -58,7 +58,7 @@ var requestHandler = function(request, response) {
   // which includes the status and all headers.
   response.writeHead(statusCode, headers);
 
-  // var resultArr = [];
+
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
