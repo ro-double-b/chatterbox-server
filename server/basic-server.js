@@ -15,8 +15,7 @@ var defaultCorsHeaders = {
 var stubMsg = {results: [
     {username: 'anonymous',
     text: 'hello',
-    roomname: 'lobby'}
-  ]};
+    roomname: 'lobby'}]};
 
 app.get('/classes/messages', function(request, response) {
   response.writeHead(200, defaultCorsHeaders);
