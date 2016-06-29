@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 var http = require('http');
 
-// app.use(express.static(__dirname + '/Public'));
+app.use(express.static(__dirname + '/client'));
 // var handleRequest = require('./request-handler');
 var defaultCorsHeaders = {
   'Content-Type' : 'application/json',
