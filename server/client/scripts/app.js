@@ -9,7 +9,7 @@ var app = {
   lastMessageId: 0,
   friends: {},
 
-  init: function() {
+  init: () => {
     // Get username
     app.username = window.location.search.substr(10);
 
@@ -32,7 +32,7 @@ var app = {
     setInterval(app.fetch, 3000);
   },
 
-  send: function(data) {
+  send: (data) => {
     app.startSpinner();
     // Clear messages input
     app.$message.val('');
@@ -43,23 +43,23 @@ var app = {
       type: 'POST',
       data: JSON.stringify(data),
       contentType: 'application/json',
-      success: function (data) {
+      success: (data) => {
         // Trigger a fetch to update the messages, pass true to animate
         app.fetch();
       },
-      error: function (data) {
+      error: (data) => {
         console.error('chatterbox: Failed to send message', data);
       }
     });
   },
 
-  fetch: function(animate) {
+  fetch: (animate) => {
     $.ajax({
       url: app.server,
       type: 'GET',
       contentType: 'application/json',
       data: {order: '-createdAt'},
-      success: function(data) {
+      success: (data) => {
         // Don't bother if we have nothing to work with
         if (!data.results || !data.results.length) { return; }
 
@@ -79,17 +79,17 @@ var app = {
           app.lastMessageId = mostRecentMessage.objectId;
         }
       },
-      error: function(data) {
+      error: (data) => {
         console.error('chatterbox: Failed to fetch messages');
       }
     });
   },
 
-  clearMessages: function() {
+  clearMessages: () => {
     app.$chats.html('');
   },
 
-  populateMessages: function(results, animate) {
+  populateMessages: (results, animate) => {
     // Clear existing messages
 
     app.clearMessages();
@@ -110,12 +110,12 @@ var app = {
     }
   },
 
-  populateRooms: function(results) {
+  populateRooms: (results) => {
     app.$roomSelect.html('<option value="__newRoom">New room...</option><option value="" selected>Lobby</option></select>');
 
     if (results) {
       var rooms = {};
-      results.forEach(function(data) {
+      results.forEach((data) =>{
         var roomname = data.roomname;
         if (roomname && !rooms[roomname]) {
           // Add the room to the select menu
@@ -131,7 +131,7 @@ var app = {
     app.$roomSelect.val(app.roomname);
   },
 
-  addRoom: function(roomname) {
+  addRoom: (roomname) => {
     // Prevent XSS by escaping with DOM methods
     var $option = $('<option/>').val(roomname).text(roomname);
 
@@ -139,7 +139,7 @@ var app = {
     app.$roomSelect.append($option);
   },
 
-  addMessage: function(data) {
+  addMessage: (data) => {
     if (!data.roomname) {
       data.roomname = 'lobby';
     }
@@ -167,7 +167,7 @@ var app = {
     }
   },
 
-  toggleFriend: function(evt) {
+  toggleFriend: (evt) => {
     var username = $(evt.currentTarget).attr('data-username');
 
     if (username !== undefined) {
@@ -181,7 +181,7 @@ var app = {
     }
   },
 
-  saveRoom: function(evt) {
+  saveRoom: (evt) => {
 
     var selectIndex = app.$roomSelect.prop('selectedIndex');
     // New room is always the first option
@@ -210,7 +210,7 @@ var app = {
     }
   },
 
-  handleSubmit: function(evt) {
+  handleSubmit: (evt) => {
     var message = {
       username: app.username,
       text: app.$message.val(),
@@ -223,14 +223,13 @@ var app = {
     evt.preventDefault();
   },
 
-  startSpinner: function() {
+  startSpinner: () => {
     $('.spinner img').show();
     $('form input[type=submit]').attr('disabled', 'true');
   },
 
-  stopSpinner: function() {
+  stopSpinner: () => {
     $('.spinner img').fadeOut('fast');
     $('form input[type=submit]').attr('disabled', null);
   }
 };
-

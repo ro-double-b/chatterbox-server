@@ -17,13 +17,13 @@ var stubMsg = {results: [
     text: 'hello',
     roomname: 'lobby'}]};
 
-app.get('/classes/messages', function(request, response) {
+app.get('/classes/messages', (request, response) => {
   response.writeHead(200, defaultCorsHeaders);
   response.end(JSON.stringify(stubMsg));
 });
 
-app.post('/classes/messages', function(request, response) {
-  request.on('data', function(chunk) {
+app.post('/classes/messages', (request, response) => {
+  request.on('data', (chunk) => {
     stubMsg.results.push(JSON.parse(chunk.toString()));
   });
   request.on('end', function() {
@@ -32,12 +32,12 @@ app.post('/classes/messages', function(request, response) {
   });
 });
 
-app.options('/classes/messages', function(request, response) {
+app.options('/classes/messages', (request, response) => {
   response.writeHead(200, defaultCorsHeaders);
   response.end();
 });
 
-var server = app.listen(3000, function() {
+var server = app.listen(3000, () => {
   var host = '127.0.0.1';
   var port = 3000;
 });
